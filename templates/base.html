@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/article_detail.css">
+    <script src="/static/jquery/jquery.js"></script>
+    <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .header{
+            width: 100%;
+            height: 60px;
+            background-color: #afd9ee;
+        }
+        .header .blog_title{
+            line-height: 60px;
+            color: white;
+            font-size: 18px;
+            margin-left: 20px;
+        }
+        .nav-left{
+            float: right;
+            margin-right: 30px;
+            line-height: 60px;
+        }
+        .nav-left>li{
+            float: right;
+            list-style: none;
+            margin-left: 20px;
+        }
+        .container-fluid{
+            margin-top: 30px;
+        }
+        .title{
+            font-weight: bold;
+        }
+        .desc_div{
+            padding-top: 10px;
+        }
+        .desc{
+            text-align: justify;
+        }
+        .posted{
+            float: right;
+            color: darkgray;
+        }
+        .posted .a{
+            color: darkgray;;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="blog_title">{{ blog.title }}</span>
+        <ul class="nav-left">
+            <li><a href="/backend/">后台管理</a></li>
+            <li><a href="/{{ user }}/">个人首页</a></li>
+            <li><a href="/index/">博客园</a></li>
+            <li><a href="">{{ username }}</a></li>
+        </ul>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-success">
+                     <div class="panel-heading">我的标签</div>
+                    {% for tag in tag_list %}
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="/{{ username }}/tag/{{ tag.0 }}/">{{ tag.0 }}({{ tag.1 }})</a></li>
+                        </ul>
+                    {% endfor %}
+                </div>
+                <div class="panel panel-success">
+                     <div class="panel-heading">随笔分类</div>
+                    {% for category in category_list %}
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="/{{ username }}/category/{{ category.0 }}/">{{ category.0 }}({{ category.1 }})</a></li>
+                        </ul>
+                    {% endfor %}
+
+                </div>
+                <div class="panel panel-success">
+                     <div class="panel-heading">随笔归档</div>
+                    {% for date in date_list %}
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="/{{ username }}/achrive/{{ date.0 }}/">{{ date.0 }}({{ date.1 }})</a></li>
+                        </ul>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-9">
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

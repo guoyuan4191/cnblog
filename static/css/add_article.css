@@ -1,0 +1,71 @@
+        .add{
+            height: 20px;
+            background-color:gainsboro;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .add>span{
+            margin-left: 10px;
+            font-weight: bold;
+
+        }
+        .add_p{
+            font-weight: bold;
+        }
+        .foot{
+            background-color:#F1F1F1;
+        }
+        .option{
+            height: 30px;
+            background-color: #E5EEF7;
+            border-top: 1px solid #BBB;
+            border-bottom: 1px dashed #BBB;
+            line-height: 30px;
+        }
+        .option>span{
+            margin-left: 20px;
+            font-weight: bold;
+        }
+        .cate_title{
+            height: 20px;
+            background-color: #E5EEF7;
+            border-top: 1px solid #BBB;
+            border-bottom: 1px dashed #BBB;
+
+            margin-top: 10px;
+        }
+        .cate_title>span{
+            margin-left: 20px;
+        }
+        .cate_list{
+            height: 60px;
+        }
+        .category_list{
+            list-style: none;
+            float: left;
+            margin-top: 10px;
+            margin-left: 30px;
+        }
+        .tag_title{
+            height: 20px;
+            background-color:  #E5EEF7;
+            border-top: 1px solid #BBB;
+            border-bottom: 1px dashed #BBB;
+            margin-top: 10px;
+        }
+        .tag_title>span{
+            margin-left: 20px;
+        }
+        .tag{
+            height: 60px;
+        }
+        .tag_list{
+            list-style: none;
+            float: left;
+            margin-top: 10px;
+            margin-left: 30px;
+        }
+        .btn{
+            background-color:#2b669a;
+            color: white;
+        }

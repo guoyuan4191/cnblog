@@ -1,0 +1,63 @@
+{% extends 'backend/backend_base.html' %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="add">
+            <span>添加随笔</span>
+        </div>
+        <div>
+            <label class="add_p">标题</label>
+            <input type="text" size="150" name="title">
+        </div>
+        <div class="content">
+            <span style="font-weight: bold">内容</span>
+            <span>(Kindeditor编辑器，不支持拖放/粘贴上传图片)</span>
+            <div>
+                <textarea name="content" id="article_content" cols="152" rows="10"></textarea>
+            </div>
+        </div>
+        <div class="foot">
+            <div class="option"><span>常用选项</span></div>
+
+            <div>
+                <div class="cate_title"><span>个人分类</span></div>
+                <ul class="cate_list">
+                    {% for category in category_list %}
+                     <li class="category_list">{{ category.title }}<input type="radio" name="category" value="{{ category.pk }}"></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <div class="tag_title"><span>个人标签</span></div>
+                <ul class="tag">
+                    {% for tag in tag_list %}
+                     <li class="tag_list">{{ tag.title }}<input type="checkbox" name="tag" value="{{ tag.pk }}"></li>
+                    {% endfor %}
+            </ul>
+            </div>
+        </div>
+        <input type="submit" value="发布" class="btn">
+    </form>
+    
+
+
+    <script charset="utf-8" src="/static/kindeditor/kindeditor-all.js"></script>
+    <script>
+            KindEditor.ready(function(K) {
+                    window.editor = K.create('#article_content',{
+                        height:'500px',
+                        {#resizeType:0,#}
+                        uploadJson:'/upload/',
+                        extraFileUploadParams:{
+                            csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                        },
+                        filePostName:'upload_img',
+
+                    });
+            });
+</script>
+
+
+
+{% endblock %}

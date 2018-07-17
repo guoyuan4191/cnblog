@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="article_info">
+        <h4>{{ article.title }}</h4>
+        <div class="content">{{ article.content|safe }}</div>
+    </div>
+    {#点赞#}
+    <div class="clearfix">
+        <div id="div_digg">
+            <div class="diggit action">
+                <span class="diggnum" id="digg_count">{{ article.up_count }}</span>
+            </div>
+            <div class="buryit action">
+                <span class="burynum" id="bury_count">{{ article.down_count }}</span>
+            </div>
+            <div class="clear"></div>
+            <div class="diggword" id="digg_tips"></div>
+        </div>
+    </div>
+
+    {#评论#}
+
+    <div>
+        <p>评论列表</p>
+        <ul class="comment_list list-group">
+            {% for comment in comment_list %}
+                <li class="list-group-item">
+                    <div>
+                        <a href="">#{{ forloop.counter }}楼</a>
+                        <span>{{ comment.create_time|date:'Y-m-d H:i' }}</span>
+                        <a href="">{{ comment.user.username }}</a>
+                        <a href="javascript:void(0)" class="pull-right reply_btn" username="{{ comment.user.username }}" comment_id="{{ comment.pk }}"><span>回复</span></a>
+                    </div>
+
+                    {% if comment.parent_comment_id %}
+                        <div class="parent_comment_info well">
+                            <p>{{ comment.parent_comment.user }}:{{ comment.parent_comment.content }}</p>
+                        </div>
+                    {% endif %}
+
+                    <div>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="commentform">发表评论</div>
+        <p class="p">昵称：<input class='author' type="text" id="tbCommentAuthor" disabled="disabled" size="50" value="{{ request.user.username }}"></p>
+        <p>评论内容</p>
+        <div>
+            <textarea name="" id="comment_content" cols="60" rows="10"></textarea>
+        </div>
+        <input type="submit" value="提交评论" class="btn btn-default comment_btn">
+    </div>
+    <hr>
+    <hr>
+
+    {% csrf_token %}
+    <script>
+    //点赞功能
+        $('.action').click(function () {
+            //判断用户是否登录
+            if('{{ request.user.username }}'){
+                var __this=$(this).children('span');
+                var is_up = $(this).hasClass('diggit');
+                $.ajax({
+                    url:'/digg/',
+                    type:'post',
+                    data:{
+                        article_id:'{{ article.pk }}',
+                        is_up:is_up,
+                        csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                    },
+                    success:function (data) {
+                        if(data.state){
+                            var val=__this.text();
+                            __this.text(parseInt(val)+1)
+                        }else{
+                            //三元运算
+                            var val=data.handles?"您已经推荐过！":"您已经反对过！";
+                            $('#digg_tips').html(val);
+
+                            /*if(data.handles){
+                                $('#digg_tips').html('您已经推荐过!')
+                            }else{
+                                $('#digg_tips').html('您已经反对过!')
+                            }*/
+                            setTimeout(function () {
+                                $('#digg_tips').html("")
+                            },1000)
+                        }
+
+                    }
+            })
+
+            } else{
+                location.href='/login/'
+            }
+        });
+    //评论功能
+         var parent_comment_id='';
+        $('.comment_btn').click(function () {
+            var content=$('#comment_content').val();
+            if(parent_comment_id){
+                //取到\n换行符的索引值，将评论内容进行切片得到一个新的评论内容
+                var index=content.indexOf('\n');
+                content=content.slice(index+1)
+            }
+            $.ajax({
+                url:'/comment/',
+                type:'post',
+                data:{
+                    content:content,
+                    article_id:'{{ article.pk }}',
+                    parent_comment_id:parent_comment_id,
+                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                },
+                success:function (data) {
+                    var create_time=data.create_time;
+                    var comment_content=data.content;
+                    var comment_user=data.user;
+                    //利用模版字符串将li添加到ul中，模版字符串ES6语法，用反引号，嵌入变量需要将变量名写在${}之中
+                    var li=`<li class="list-group-item">
+                                <div>
+                                    <span>${create_time}</span>
+                                    <a href="">${comment_user}</a>
+                                </div>
+                                <div>
+                                    <p>${comment_content}</p>
+                                </div>
+                            </li>`;
+                    $('.comment_list').append(li)
+
+                }
+            })
+        });
+
+        $('.reply_btn').click(function () {
+            $('#comment_content').focus();
+            var val='@'+$(this).attr('username')+'\n';
+            $('#comment_content').val(val)
+            parent_comment_id=$(this).attr('comment_id')
+
+
+        })
+
+    </script>
+{% endblock %}
